@@ -8,7 +8,7 @@ body {
 }
 
 /* フォーム全体 */
-.login-form {
+.auth-form {
     width: 100%;
     max-width: 360px;
     padding: 32px;
@@ -17,13 +17,24 @@ body {
 }
 
 /* フォーム行 */
+.form-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
 .form-row label {
-    width: 120px;
+    width: 140px;
 }
 
 .form-row input {
     flex: 1;
     padding: 6px;
+}
+
+.form-row input:focus {
+    outline: none;
+    border: 1px solid #999;
 }
 
 /* ボタン */
@@ -46,7 +57,7 @@ body {
 
 /* エラーメッセージ */
 .error {
-    font-size: 12px;
+    font-size: 14px;
     color: #e74c3c;
 }
 
@@ -58,9 +69,10 @@ body {
     margin-bottom: 16px;
 }
 
-.mt120 {
-    margin-top: 120px;
+.mt16 {
+    margin-top: 16px;
 }
+
 
 .mt24 {
     margin-top: 24px;
@@ -68,12 +80,4 @@ body {
 
 .text-center {
     text-align: center;
-}
-
-.flex {
-    display: flex;
-}
-
-.items-center {
-    align-items: center;
 }
