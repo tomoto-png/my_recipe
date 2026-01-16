@@ -2,6 +2,42 @@
 
 class Controller_Recipe extends Controller_Base
 {
+	public function action_index()
+	{
+		list(, $user_id) = Auth::get_user_id();
+		$params = [
+			'keyword'     => Input::get('keyword'),
+			'category_id' => Input::get('category_id'),
+		];
+
+		$recipes = Model_Recipe::find_by_user($user_id, $params);
+		$recipe_ids = array_column($recipes, 'id');
+		$ingredient_rows = Model_Recipe_Ingredient::find_by_recipe_ids($recipe_ids);
+		$category_options = ['' => 'すべて'] + Model_Category::get_list();
+
+		$ingredients_by_recipe = [];
+		foreach ($ingredient_rows as $row) {
+			$rid = $row['recipe_id'];
+			$ingredients_by_recipe[$rid][] = $row['name'];
+		}
+
+		$this->template->title = 'レシピ一覧';
+		$this->template->content = View::forge('recipe/index', ['recipes' => $recipes, 'ingredients' => $ingredients_by_recipe, 'categories' => $category_options]);
+	}
+
+	public function action_view($id)
+	{
+		list(, $user_id) = Auth::get_user_id();
+
+		$recipe = Model_Recipe::find_by_id($id, $user_id);
+
+		if (empty($recipe)) {
+			throw new HttpNotFoundException();
+		}
+
+		$this->template->title = 'レシピ詳細';
+		$this->template->content = View::forge('recipe/view', ['recipe' => $recipe]);
+	}
 
 	public function action_create()
 	{
@@ -143,7 +179,7 @@ class Controller_Recipe extends Controller_Base
 			];
 
 			// レシピ登録
-			$recipe_id = Model_Recipe::insertRecipe($recipe_data);
+			$recipe_id = Model_Recipe::create($recipe_data);
 
 			if (! $recipe_id) {
 				throw new \Exception('レシピの登録に失敗しました');
@@ -179,6 +215,6 @@ class Controller_Recipe extends Controller_Base
 			return Response::redirect('recipe/create');
 		}
 
-		return Response::redirect('/');
+		return Response::redirect('recipe/index');
 	}
 }

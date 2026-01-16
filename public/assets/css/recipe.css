@@ -1,7 +1,7 @@
 .form-container {
     max-width: 640px;
     margin: 0 auto;
-    background: #f7f7f7;
+    background-color: #f7f7f7;
     border: 1px solid #ccc;
     border-radius: 4px;
     padding: 32px;
@@ -28,7 +28,7 @@
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
-    background: #fff;
+    background-color: #fff;
 }
 
 /* アップロード画像 */
@@ -38,7 +38,7 @@
 
     border: 2px dashed #ccc;
     border-radius: 8px;
-    background: #fafafa;
+    background-color: #fafafa;
 
     display: flex;
     align-items: center;
@@ -86,7 +86,7 @@
     gap: 6px;
 }
 
-.ingredient-field label {
+.ingredient-field__label {
     width: 60px;
 }
 
@@ -111,11 +111,11 @@
     gap: 16px;
 }
 
-.step-field label {
+.step-field__label {
     font-size: 14px;
 }
 
-.step-field textarea {
+.step-field__textarea {
     flex: 1;
     border: 1px solid #ccc;
     min-height: 60px;
@@ -145,11 +145,11 @@
 .btn-remove {
     color: #b71c1c;
     border: 1px solid #ef9a9a;
-    background: #fdecea;
+    background-color: #fdecea;
 }
 
 .btn-remove:hover {
-    background: #f9d6d5;
+    background-color: #f9d6d5;
     border-color: #c62828;
 }
 
@@ -157,11 +157,11 @@
 .btn-add {
     color: #1b5e20;
     border: 1px solid #81c784;
-    background: #e8f5e9;
+    background-color: #e8f5e9;
 }
 
 .btn-add:hover {
-    background: #c8e6c9;
+    background-color: #c8e6c9;
     border-color: #2e7d32;
 }
 
@@ -169,21 +169,158 @@
 .btn-cancel {
     color: #444;
     border: 1px solid #ccc;
-    background: #f5f5f5;
+    background-color: #f5f5f5;
 }
 
 .btn-cancel:hover {
-    background: #e0e0e0;
+    background-color: #e0e0e0;
     border-color: #999;
 }
 
-.form-actions {
+/* 検索ボタン */
+.btn-search {
+    height: 38px;
+    padding: 0 14px;
+    font-size: 14px;
+
+    color: #333;
+    background-color: #f5f5f5;
+    border: 1px solid #bbb;
+    border-radius: 4px;
+
+    cursor: pointer;
+}
+
+.btn-search:hover {
+    background-color: #e0e0e0;
+    border-color: #888;
+}
+
+.recipe-form__actions {
     display: flex;
     justify-content: flex-end;
     gap: 12px;
     margin-top: 24px;
 }
 
+/* 検索ボックス・カテゴリー */
+.recipe-search__row {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.recipe-search__input-wrap {
+    position: relative;
+    flex: 3;
+}
+
+.recipe-search__icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    width: 20px;
+    height: 20px;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+.recipe-search__input,
+.recipe-search__select {
+    height: 38px;
+    padding: 0 10px;
+    font-size: 14px;
+    color: #333;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.recipe-search__input {
+    width: 100%;
+    padding-left: 34px;
+}
+
+.recipe-search__select {
+    flex: 1;
+}
+
+/* レシピカード */
+.recipe-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.recipe-card {
+    display: flex;
+    text-decoration: none;
+    background-color: #d9d9d9;
+    transition: box-shadow 0.2s, transform 0.1s;
+}
+
+.recipe-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    transform: translateY(-1px);
+}
+
+.recipe-card__image {
+    width: 50%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+}
+
+.recipe-card__info {
+    width: 50%;
+    padding: 8px 12px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    height: 100%;
+}
+
+.recipe-card__info>* {
+    margin: 0;
+}
+
+.recipe-card__title {
+    color: #333;
+    font-size: 18px;
+    font-weight: bold;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.recipe-card__category {
+    padding: 2px 6px;
+    font-size: 12px;
+    color: #555;
+    background-color: #f2f2f2;
+    border-radius: 10px;
+    width: fit-content;
+}
+
+.recipe-card__ingredients {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    font-size: 14px;
+    line-height: 1.4;
+    color: #444;
+    padding: 2px 0;
+}
+
+.recipe-card__date {
+    margin-top: auto;
+    font-size: 12px;
+    color: #999;
+}
+
+/* エラー */
 .error {
     color: #d32f2f;
     font-size: 0.9em;

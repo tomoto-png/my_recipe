@@ -77,7 +77,7 @@
 			<div class="ingredient-item mb16">
 				<div class="ingredient-fields">
 					<div class="ingredient-field">
-						<?= Form::label('材料名', null, ['class' => 'nowrap, font-semibold']); ?>
+						<?= Form::label('材料名', null, ['class' => 'ingredient-field__label nowrap, font-semibold']); ?>
 						<?= Form::input(
 							'ingredients[name][]',
 							'',
@@ -86,7 +86,7 @@
 					</div>
 
 					<div class="ingredient-field">
-						<?= Form::label('分量', null, ['class' => 'nowrap, font-semibold']); ?>
+						<?= Form::label('分量', null, ['class' => 'ingredient-field__label nowrap, font-semibold']); ?>
 						<?= Form::input(
 							'ingredients[quantity][]',
 							'',
@@ -121,12 +121,12 @@
 					<?= Form::label(
 						'',
 						'',
-						['data-bind' => 'text: "手順 " + ($index() + 1)', 'class' => 'font-semibold']
+						['data-bind' => 'text: "手順 " + ($index() + 1)', 'class' => 'step-field__label font-semibold']
 					); ?>
 					<?= Form::textarea(
 						'steps[]',
 						'',
-						['data-bind' => 'value: description']
+						['data-bind' => 'value: description', 'class' => 'step-field__textarea']
 					); ?>
 				</div>
 
@@ -146,7 +146,7 @@
 		<button type="button" class="btn btn-add" data-bind="click: addStep">
 			＋ 手順を追加
 		</button>
-		<div class="form-actions">
+		<div class="recipe-form__actions">
 			<button type="button" class="btn-lg btn-cancel" onclick="history.back();">
 				キャンセル
 			</button>
