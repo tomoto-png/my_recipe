@@ -50,4 +50,15 @@ class Model_Recipe_Ingredient
 
         $query->execute();
     }
+
+    public static function update($recipe_id, array $ingredients, string $now)
+    {
+        $table = static::$_table_name;
+
+        \DB::delete($table)
+            ->where('recipe_id', $recipe_id)
+            ->execute();
+
+        static::create($recipe_id, $ingredients, $now);
+    }
 }

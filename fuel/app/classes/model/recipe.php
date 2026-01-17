@@ -77,6 +77,15 @@ class Model_Recipe
         $result = \DB::insert($table)->set($recipe_data)->execute();
         return $result[0];
     }
+    public static function update($id, $user_id, array $recipe_data)
+    {
+        $table = static::$_table_name;
+        $result = \DB::update($table)
+            ->set($recipe_data)
+            ->where('id', $id)
+            ->where('user_id', $user_id)
+            ->execute();
+    }
     //レシピ削除
     public static function delete($id, $user_id)
     {

@@ -55,7 +55,7 @@
 						src="/assets/img/upload_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg"
 						alt="画像をアップロード"
 						class="upload-icon"
-						data-bind="visible: !imagePreview()">
+						data-bind="visible: imagePreview() === null">
 
 					<!-- プレビュー表示 -->
 					<img data-bind="

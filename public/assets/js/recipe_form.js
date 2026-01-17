@@ -37,7 +37,7 @@ function RecipeFormViewModel() {
 
     self.steps = ko.observableArray(
         initialSteps.length
-            ? initialSteps.map(description => new Step(description))
+            ? initialSteps.map(step => new Step(step.description))
             : [new Step()]
     );
 
@@ -52,7 +52,7 @@ function RecipeFormViewModel() {
     };
 
     //画像
-    self.imagePreview = ko.observable(null);
+    self.imagePreview = ko.observable(window.initialImagePath ?? null);
 
     self.triggerFileInput = () => {
         document.getElementById('image_path').click();

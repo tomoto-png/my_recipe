@@ -2,7 +2,7 @@
 
 class Model_Category
 {
-    public static function get_list()
+    public static function find_all()
     {
         return \DB::select('id', 'name')
             ->from('categories')

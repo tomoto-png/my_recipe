@@ -1,8 +1,5 @@
 <?php
 
-use Fuel\Core\Model;
-use Fuel\Core\Response;
-
 class Controller_Recipe extends Controller_Base
 {
 	public function action_index()
@@ -16,7 +13,7 @@ class Controller_Recipe extends Controller_Base
 		$recipes = Model_Recipe::find_by_user($user_id, $params);
 		$recipe_ids = array_column($recipes, 'id');
 		$ingredient_rows = Model_Recipe_Ingredient::find_by_recipe_ids($recipe_ids);
-		$category_options = ['' => 'すべて'] + Model_Category::get_list();
+		$category_options = ['' => 'すべて'] + Model_Category::find_all();
 
 		$ingredients_by_recipe = [];
 		foreach ($ingredient_rows as $row) {
@@ -48,12 +45,9 @@ class Controller_Recipe extends Controller_Base
 
 	public function action_create()
 	{
-		//カテゴリーの一覧取得
-		$category_options = Model_Category::get_list();
-
 		$this->template->title = 'レシピ登録';
 
-		$this->template->content = View::forge('recipe/create', ['category_options' => $category_options]);
+		$this->template->content = View::forge('recipe/create', ['category_options' => Model_Category::find_all()]);
 	}
 	public function post_create()
 	{
@@ -62,93 +56,14 @@ class Controller_Recipe extends Controller_Base
 			throw new \HttpBadRequestException();
 		}
 
-		$category_options = Model_Category::get_list();
-
-		$errors = [];
-		$val = Validation::forge();
-
-		//基本バリデーション
-		$val->add('title', 'レシピ名')
-			->add_rule('required');
-
-		$val->add('category', 'カテゴリー')
-			->add_rule('required')
-			->add_rule('numeric_min', 1);
-
-		//メッセージ設定
-		$val->set_message('required', ':label は必須です');
-		$val->set_message('numeric_min', ':labelを正しく選択してください');
-
-		//画像バリデーション
-		if ($_FILES['image_path']['error'] === UPLOAD_ERR_NO_FILE) {
-			$errors['image_path'] = '画像を選択してください';
-		} else {
-			Upload::process([
-				'path' => DOCROOT . 'uploads/recipes',
-				'randomize' => true,
-				'ext_whitelist' => ['jpg', 'jpeg', 'png', 'gif'],
-				'max_size' => 2 * 1024 * 1024,
-			]);
-
-			if (! Upload::is_valid()) {
-				$errors['image_path'] = '画像は jpg / jpeg / png / gif（2MB以下）でアップロードしてください';
-			}
-		}
-
-		if (! $val->run()) {
-			foreach ($val->error() as $key => $error) {
-				$errors[$key] = $error->get_message();
-			}
-		}
-
-		//材料バリデーション
-		$ingredients = Input::post('ingredients');
-		$clean_ingredients = [];
-
-		// 材料の空行を除去し、有効な材料のみを抽出
-		if (is_array($ingredients) && isset($ingredients['name']) && is_array($ingredients['name'])) {
-			foreach ($ingredients['name'] as $i => $name) {
-				$name = trim($name);
-				// 前後の空白を除去してチェック
-				if ($name === '') continue;
-
-				$quantity = trim($ingredients['quantity'][$i] ?? '');
-
-				$clean_ingredients[] = [
-					'name' => $name,
-					'quantity' => $quantity
-				];
-			}
-		}
-
-		if (empty($clean_ingredients)) {
-			$errors['ingredients'] = '材料を1つ以上入力してください';
-		}
-
-		//手順バリデーション
-		$steps = Input::post('steps');
-		$clean_steps = [];
-
-		// 手順の空行を除去し、有効な手順のみを抽出
-		if (is_array($steps)) {
-			foreach ($steps as $step) {
-				$step = trim($step);
-				// 前後の空白を除去してチェック
-				if ($step === '') continue;
-
-				$clean_steps[] = $step;
-			}
-		}
-
-		if (empty($clean_steps)) {
-			$errors['steps'] = '手順を1つ以上入力してください';
-		}
+		[$errors, $clean_ingredients, $clean_steps]
+			= Service_Recipe_Form::validate(true);
 
 		//エラーがあればフォームに戻す
 		if (! empty($errors)) {
 			$this->template->content = View::forge('recipe/create', [
 				'errors' => $errors,
-				'category_options' => $category_options,
+				'category_options' => Model_Category::find_all(),
 				'clean_ingredients' => $clean_ingredients,
 				'clean_steps' => $clean_steps,
 			]);
@@ -210,7 +125,103 @@ class Controller_Recipe extends Controller_Base
 				\File::delete(DOCROOT . $image_path);
 			}
 
-			Session::set_flash('error', '登録中にエラーが発生しました。もう一度お試しください。');
+			Session::set_flash('error', '登録に失敗しました');
+			return Response::redirect('recipe/create');
+		}
+
+		return Response::redirect('recipe/index');
+	}
+
+	public function action_edit($id)
+	{
+		list(, $user_id) = Auth::get_user_id();
+
+		// レシピ取得
+		$recipe = Model_Recipe::find_or_fail($id, $user_id);
+		$ingredients = Model_Recipe_Ingredient::find_by_recipe_id($id);
+		$steps = Model_Recipe_Step::find_by_recipe_id($id);
+
+		$this->template->content = View::forge('recipe/edit', [
+			'recipe' => $recipe,
+			'ingredients' => $ingredients,
+			'steps' => $steps,
+			'category_options' => Model_Category::find_all(),
+		]);
+	}
+
+	public function post_edit($id)
+	{
+		// CSRFチェック
+		if (!\Security::check_token()) {
+			throw new \HttpBadRequestException();
+		}
+
+		list(, $user_id) = Auth::get_user_id();
+		$recipe = Model_Recipe::find_or_fail($id, $user_id);
+
+		[$errors, $clean_ingredients, $clean_steps]
+			= Service_Recipe_Form::validate(false);
+
+		//エラーがあればフォームに戻す
+		if (! empty($errors)) {
+			$this->template->content = View::forge('recipe/edit', [
+				'errors' => $errors,
+				'recipe' => $recipe,
+				'category_options' => Model_Category::find_all(),
+				'ingredients' => $clean_ingredients,
+				'steps' => $clean_steps,
+			]);
+			return;
+		}
+
+		try {
+			$now = date('Y-m-d H:i:s');
+
+			$old_image_path = $recipe['image_path'];
+
+			$image_path = $old_image_path;
+
+			\DB::start_transaction();
+
+			if ($_FILES['image_path']['error'] !== UPLOAD_ERR_NO_FILE) {
+				Upload::save();
+				$files = Upload::get_files();
+				if (empty($files)) {
+					throw new \Exception('画像の保存に失敗しました');
+				}
+				$file = Upload::get_files()[0];
+				$image_path = 'uploads/recipes/' . $file['saved_as'];
+			}
+
+			Model_Recipe::update(
+				$id,
+				$user_id,
+				[
+					'title' => Input::post('title'),
+					'category_id' => Input::post('category'),
+					'image_path' => $image_path,
+					'updated_at' => $now,
+				]
+			);
+
+			\DB::commit_transaction();
+
+			if ($image_path !== $old_image_path && file_exists(DOCROOT . $old_image_path)) {
+				\File::delete(DOCROOT . $old_image_path);
+			}
+
+			Model_Recipe_Ingredient::update($id, $clean_ingredients, $now);
+			Model_Recipe_Step::update($id, $clean_steps, $now);
+		} catch (\Exception $e) {
+
+			\DB::rollback_transaction();
+
+			// ★ 新しくアップした画像だけ削除
+			if ($image_path !== $old_image_path && file_exists(DOCROOT . $image_path)) {
+				\File::delete(DOCROOT . $image_path);
+			}
+
+			Session::set_flash('error', '更新に失敗しました');
 			return Response::redirect('recipe/create');
 		}
 
