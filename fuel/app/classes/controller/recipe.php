@@ -31,12 +31,16 @@ class Controller_Recipe extends Controller_Base
 
 		$recipe = Model_Recipe::find_by_id($id, $user_id);
 
+
 		if (empty($recipe)) {
 			throw new HttpNotFoundException();
 		}
 
+		$ingredients = Model_Recipe_Ingredient::find_by_recipe_id($recipe['id']);
+		$steps = Model_Recipe_Step::find_by_recipe_id($recipe['id']);
+
 		$this->template->title = 'レシピ詳細';
-		$this->template->content = View::forge('recipe/view', ['recipe' => $recipe]);
+		$this->template->content = View::forge('recipe/view', ['recipe' => $recipe, 'ingredients' => $ingredients, 'steps' => $steps]);
 	}
 
 	public function action_create()
@@ -186,14 +190,14 @@ class Controller_Recipe extends Controller_Base
 			}
 
 			// 材料登録
-			Model_Recipe_Ingredient::insertIngredients(
+			Model_Recipe_Ingredient::create(
 				$recipe_id,
 				$clean_ingredients,
 				$now
 			);
 
 			// 手順登録
-			Model_Recipe_Step::insertSteps(
+			Model_Recipe_Step::create(
 				$recipe_id,
 				$clean_steps,
 				$now

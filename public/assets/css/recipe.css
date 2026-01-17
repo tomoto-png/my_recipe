@@ -63,7 +63,7 @@
 }
 
 .section-title {
-    padding-bottom: 4px;
+    padding-bottom: 6px;
     border-bottom: 2px solid #000;
     font-size: 18px;
 }
@@ -130,6 +130,7 @@
 /* ボタン */
 .btn {
     border-radius: 4px;
+    font-size: 13px;
     padding: 4px 10px;
     cursor: pointer;
 }
@@ -163,6 +164,19 @@
 .btn-add:hover {
     background-color: #c8e6c9;
     border-color: #2e7d32;
+}
+
+/* 編集ボタン */
+.btn-edit {
+    color: #1565c0;
+    text-decoration: none;
+    border: 1px solid #90caf9;
+    background-color: #e3f2fd;
+}
+
+.btn-edit:hover {
+    background-color: #bbdefb;
+    border-color: #64b5f6;
 }
 
 /* キャンセルボタン */
@@ -318,6 +332,114 @@
     margin-top: auto;
     font-size: 12px;
     color: #999;
+}
+
+.recipe-detail {
+    max-width: 880px;
+    margin: 0 auto;
+}
+
+.recipe-detail__hero {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
+.recipe-detail__image {
+    width: 50%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+}
+
+.recipe-detail__info {
+    width: 50%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding-left: 8px;
+    gap: 10px;
+}
+
+.recipe-detail__info>* {
+    margin: 0;
+}
+
+.recipe-detail__heading {
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+.recipe-detail__category {
+    padding: 2px 10px;
+    font-size: 14px;
+    color: #555;
+    background-color: #f2f2f2;
+    border-radius: 10px;
+    width: fit-content;
+}
+
+.recipe-detail__date {
+    font-size: 14px;
+    color: #999;
+    margin-bottom: 16px;
+}
+
+.recipe-detail__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.recipe-detail__actions-top {
+    display: flex;
+    gap: 12px;
+}
+
+/* 材料 */
+.recipe-detail__ingredient {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.recipe-detail__ingredient-name {
+    font-size: 15px;
+    color: #333;
+}
+
+.recipe-detail__ingredient-quantity {
+    font-size: 14px;
+    color: #666;
+}
+
+/* 作り方 */
+.recipe-detail__step {
+    display: flex;
+    gap: 14px;
+    padding: 14px 0;
+}
+
+.recipe-detail__step-number {
+    min-width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    color: #2e7d32;
+    background-color: #e8f5e9;
+    border-radius: 50%;
+}
+
+.recipe-detail__step-description {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.8;
+    color: #333;
 }
 
 /* エラー */
