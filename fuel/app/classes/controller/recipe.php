@@ -1,5 +1,8 @@
 <?php
 
+use Fuel\Core\Model;
+use Fuel\Core\Response;
+
 class Controller_Recipe extends Controller_Base
 {
 	public function action_index()
@@ -55,13 +58,12 @@ class Controller_Recipe extends Controller_Base
 	public function post_create()
 	{
 		// CSRFチェック
-		if (! Security::check_token()) {
-			return Response::forge('不正なリクエストです');
+		if (! \Security::check_token()) {
+			throw new \HttpBadRequestException();
 		}
 
 		$category_options = Model_Category::get_list();
 
-		//バリデーション
 		$errors = [];
 		$val = Validation::forge();
 
@@ -73,7 +75,7 @@ class Controller_Recipe extends Controller_Base
 			->add_rule('required')
 			->add_rule('numeric_min', 1);
 
-		//エラーメッセージ設定
+		//メッセージ設定
 		$val->set_message('required', ':label は必須です');
 		$val->set_message('numeric_min', ':labelを正しく選択してください');
 
@@ -153,7 +155,7 @@ class Controller_Recipe extends Controller_Base
 			return;
 		}
 
-		\DB::start_transaction();
+		$image_path = null;
 
 		try {
 			// 画像の登録処理
@@ -169,25 +171,19 @@ class Controller_Recipe extends Controller_Base
 
 			// ログインユーザーを取得
 			list(, $user_id) = Auth::get_user_id();
-
 			$now = date('Y-m-d H:i:s');
 
-			// recipes用データ作成
-			$recipe_data = [
+			\DB::start_transaction();
+
+			// レシピ登録
+			$recipe_id = Model_Recipe::create([
 				'user_id'     => $user_id,
 				'title'       => Input::post('title'),
 				'category_id' => Input::post('category'),
 				'image_path'  => $image_path,
 				'created_at'  => $now,
 				'updated_at'  => $now,
-			];
-
-			// レシピ登録
-			$recipe_id = Model_Recipe::create($recipe_data);
-
-			if (! $recipe_id) {
-				throw new \Exception('レシピの登録に失敗しました');
-			}
+			]);
 
 			// 材料登録
 			Model_Recipe_Ingredient::create(
@@ -203,7 +199,6 @@ class Controller_Recipe extends Controller_Base
 				$now
 			);
 
-			// 成功
 			\DB::commit_transaction();
 		} catch (\Exception $e) {
 
@@ -211,12 +206,30 @@ class Controller_Recipe extends Controller_Base
 			\DB::rollback_transaction();
 
 			// 画像ファイルが保存されていたら削除
-			if (! empty($image_path) && file_exists(DOCROOT . $image_path)) {
-				unlink(DOCROOT . $image_path);
+			if ($image_path && file_exists(DOCROOT . $image_path)) {
+				\File::delete(DOCROOT . $image_path);
 			}
 
 			Session::set_flash('error', '登録中にエラーが発生しました。もう一度お試しください。');
 			return Response::redirect('recipe/create');
+		}
+
+		return Response::redirect('recipe/index');
+	}
+
+	public function post_delete($id)
+	{
+		// CSRFチェック
+		if (! \Security::check_token()) {
+			throw new \HttpBadRequestException();
+		}
+		list(, $user_id) = Auth::get_user_id();
+
+		try {
+			Model_Recipe::delete($id, $user_id);
+		} catch (\Exception $e) {
+			Session::set_flash('error', '削除に失敗しました');
+			return Response::redirect_back();
 		}
 
 		return Response::redirect('recipe/index');

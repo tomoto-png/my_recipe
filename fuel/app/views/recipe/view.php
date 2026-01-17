@@ -14,12 +14,14 @@
                         'action' => 'recipe/delete/' . $recipe['id'],
                         'onsubmit' => "return confirm('本当に削除しますか？')"
                     ]) ?>
+                    <?= Form::csrf(); ?>
                     <?= Form::submit('delete', '削除', ['class' => 'btn btn-remove']) ?>
                     <?= Form::close() ?>
                 </div>
 
                 <div class="recipe-detail__actions-bottom">
                     <?= Form::open(['action' => 'shopping/add']) ?>
+                    <?= Form::csrf() ?>
                     <?= Form::hidden('recipe_id', $recipe['id']) ?>
                     <?= Form::submit('add', '買い物リストに入れる', ['class' => 'btn btn-add']) ?>
                     <?= Form::close() ?>

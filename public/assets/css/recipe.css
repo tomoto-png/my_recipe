@@ -280,13 +280,13 @@
 }
 
 .recipe-card__image {
-    width: 50%;
+    width: 45%;
     aspect-ratio: 4 / 3;
     object-fit: cover;
 }
 
 .recipe-card__info {
-    width: 50%;
+    width: 55%;
     padding: 8px 12px;
     box-sizing: border-box;
     display: flex;
@@ -349,6 +349,7 @@
     width: 50%;
     aspect-ratio: 4 / 3;
     object-fit: cover;
+    box-shadow: 0 0 0 1px #eee;
 }
 
 .recipe-detail__info {
