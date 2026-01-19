@@ -24,7 +24,7 @@ class Model_Recipe_Ingredient
     {
         $table = static::$_table_name;
 
-        return DB::select('name', 'quantity')
+        return DB::select('id', 'name', 'quantity')
             ->from($table)
             ->where('recipe_id', $recipe_id)
             ->order_by('created_at', 'desc')
@@ -32,10 +32,10 @@ class Model_Recipe_Ingredient
             ->as_array();
     }
 
-    public static function create($recipe_id, $ingredients, $now)
+    public static function insertIngredients($recipe_id, $ingredients, $now)
     {
         $table = static::$_table_name;
-        $query = \DB::insert($table)
+        $query = DB::insert($table)
             ->columns(['recipe_id', 'name', 'quantity', 'created_at', 'updated_at']);
 
         foreach ($ingredients as $ingredient) {
@@ -51,14 +51,31 @@ class Model_Recipe_Ingredient
         $query->execute();
     }
 
+    public static function create($data)
+    {
+        $table = static::$_table_name;
+
+        return DB::insert($table)->set($data)->execute();
+    }
+
     public static function update($recipe_id, array $ingredients, string $now)
     {
         $table = static::$_table_name;
 
-        \DB::delete($table)
+        DB::delete($table)
             ->where('recipe_id', $recipe_id)
             ->execute();
 
         static::create($recipe_id, $ingredients, $now);
+    }
+
+    public static function delete($id)
+    {
+        $table = static::$_table_name;
+
+        return DB::delete($table)
+            ->where('id', $id)
+            ->where('recipe_id', null)
+            ->execute();
     }
 }

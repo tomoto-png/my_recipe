@@ -1,5 +1,11 @@
 <link rel="stylesheet" href="/assets/css/recipe.css">
 
+<?php if ($message = \Session::get_flash('message')): ?>
+    <div id="flash-message" class="flash-message">
+        <?php echo e($message); ?>
+    </div>
+<?php endif; ?>
+
 <div class="recipe-detail">
     <div class="recipe-detail__hero">
         <img src="/<?= e($recipe['image_path']) ?>" alt="<?= e($recipe['title']) ?>" class="recipe-detail__image">
@@ -48,3 +54,4 @@
         <?php endforeach ?>
     </section>
 </div>
+<script src="/assets/js/common.js"></script>

@@ -10,6 +10,7 @@ return array(
         1 => '002_create_categories',
         2 => '003_create_recipe_ingredients',
         3 => '004_create_recipe_steps',
+        4 => '005_create_shopping_list_items',
       ),
     ),
     'module' => 

@@ -39,7 +39,7 @@
 
     <div class="recipe-grid">
         <?php if (empty($recipes)): ?>
-            <p class="empty-message">まだレシピが登録されていません。</p>
+            <p>まだレシピが登録されていません。</p>
         <?php else: ?>
             <?php foreach ($recipes as $recipe): ?>
                 <a href="/recipe/view/<?= e($recipe['id']) ?>" class="recipe-card">

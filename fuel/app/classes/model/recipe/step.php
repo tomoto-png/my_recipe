@@ -19,7 +19,7 @@ class Model_Recipe_Step
     {
         $table = static::$_table_name;
 
-        $query = \DB::insert($table)
+        $query = DB::insert($table)
             ->columns(['recipe_id', 'step_number', 'description', 'created_at', 'updated_at']);
 
         foreach ($steps as $i => $step) {
@@ -39,7 +39,7 @@ class Model_Recipe_Step
     {
         $table = static::$_table_name;
 
-        \DB::delete($table)
+        DB::delete($table)
             ->where('recipe_id', $recipe_id)
             ->execute();
 

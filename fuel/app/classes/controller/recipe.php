@@ -101,7 +101,7 @@ class Controller_Recipe extends Controller_Base
 			]);
 
 			// 材料登録
-			Model_Recipe_Ingredient::create(
+			Model_Recipe_Ingredient::insertIngredients(
 				$recipe_id,
 				$clean_ingredients,
 				$now
