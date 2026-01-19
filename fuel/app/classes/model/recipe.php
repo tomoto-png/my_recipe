@@ -4,11 +4,11 @@ class Model_Recipe
 {
     protected static $_table_name = 'recipes';
     //ユーザーレシピ一覧取得
-    public static function find_by_user($user_id, array $params = [])
+    public static function find_by_user($user_id, $params = [])
     {
         $table = static::$_table_name;
 
-        $query = DB::select(
+        $query = \DB::select(
             "{$table}.id",
             "{$table}.title",
             "{$table}.category_id",
@@ -19,7 +19,7 @@ class Model_Recipe
             ->from($table)
             ->join('categories', 'LEFT')
             ->on("{$table}.category_id", '=', 'categories.id')
-            ->where("{$table}.user_id", $user_id);
+            ->where("{$table}.user_id", '=', $user_id);
 
         if (!empty($params['keyword'])) {
             $keyword = '%' . $params['keyword'] . '%';
@@ -40,10 +40,12 @@ class Model_Recipe
 
         return $query->execute()->as_array();
     }
+
+    //ユーザーレシピ詳細取得
     public static function find_by_id($id, $user_id)
     {
         $table = static::$_table_name;
-        return DB::select(
+        return \DB::select(
             "{$table}.id",
             "{$table}.title",
             "{$table}.category_id",
@@ -54,11 +56,13 @@ class Model_Recipe
             ->from($table)
             ->join('categories', 'LEFT')
             ->on("{$table}.category_id", '=', 'categories.id')
-            ->where("{$table}.id", $id)
-            ->where("{$table}.user_id", $user_id)
+            ->where("{$table}.id", '=', $id)
+            ->where("{$table}.user_id", '=', $user_id)
             ->execute()
             ->current();
     }
+
+    // 指定IDのレシピを取得し、存在しなければ 404 を返す
     public static function find_or_fail($id, $user_id)
     {
         $recipe = self::find_by_id($id, $user_id);
@@ -69,6 +73,7 @@ class Model_Recipe
 
         return $recipe;
     }
+
     //レシピ登録
     public static function create($recipe_data)
     {
@@ -77,42 +82,29 @@ class Model_Recipe
         $result = \DB::insert($table)->set($recipe_data)->execute();
         return $result[0];
     }
-    public static function update($id, $user_id, array $recipe_data)
+
+    //レシピ更新
+    public static function update($id, $user_id, $recipe_data)
     {
         $table = static::$_table_name;
-        $result = \DB::update($table)
+        \DB::update($table)
             ->set($recipe_data)
-            ->where('id', $id)
+            ->where('id', '=', $id)
             ->where('user_id', $user_id)
             ->execute();
     }
+
     //レシピ削除
     public static function delete($id, $user_id)
     {
         $recipe = self::find_or_fail($id, $user_id);
         $table = static::$_table_name;
 
-        try {
-            \DB::start_transaction();
+        \DB::delete($table)
+            ->where('id', $id)
+            ->where('user_id', $user_id)
+            ->execute();
 
-            // DB削除
-            \DB::delete($table)
-                ->where('id', $id)
-                ->where('user_id', $user_id)
-                ->execute();
-
-            // 画像削除
-            if (!empty($recipe['image_path'])) {
-                $path = DOCROOT . $recipe['image_path'];
-                if (file_exists($path)) {
-                    \File::delete($path);
-                }
-            }
-
-            \DB::commit_transaction();
-        } catch (\Exception $e) {
-            \DB::rollback_transaction();
-            throw $e;
-        }
+        return $recipe['image_path'];
     }
 }
