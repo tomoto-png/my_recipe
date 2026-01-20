@@ -20,16 +20,18 @@ function ShoppingViewModel() {
 
     self.closeModal = function () {
         self.isModalOpen(false);
+        self.name('');
+        self.quantity('');
     };
 
-    self.submitForm = function () {
+    self.submit = function () {
         self.errors([]);
         self.fieldErrors.name([]);
         self.fieldErrors.quantity([]);
 
-        const token = document.querySelector(
-            'input[name="fuel_csrf_token"]'
-        ).value;
+        const token = document
+            .getElementById('add-item-form')
+            .querySelector('input[name="fuel_csrf_token"]').value;
 
         fetch('/shopping/create', {
             method: 'POST',

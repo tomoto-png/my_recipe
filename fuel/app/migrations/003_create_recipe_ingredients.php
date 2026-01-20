@@ -8,7 +8,7 @@ class Create_Recipe_Ingredients
     {
         \DBUtil::create_table('recipe_ingredients', array(
             'id' => array('type' => 'int', 'constraint' => 11, 'auto_increment' => true),
-            'recipe_id' => array('type' => 'int', 'constraint' => 11),
+            'recipe_id' => array('type' => 'int', 'constraint' => 11, 'null' => true),
             'name' => array('type' => 'varchar', 'constraint' => 100),
             'quantity' => array('type' => 'varchar', 'constraint' => 50, 'null' => true),
             'created_at' => array('type' => 'datetime'),
