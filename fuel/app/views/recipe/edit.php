@@ -1,24 +1,18 @@
 <link rel="stylesheet" href="/assets/css/recipe.css">
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/2.3.0/knockout-min.js"></script>
 
-<!-- RecipeFormViewModel -->
 <div id="recipe-form">
-    <div class="form-container">
+    <div class="form-container rounded-4 p-32 border">
         <h1 class="text-center">レシピ編集</h1>
 
-        <?php if ($msg = Session::get_flash('error')): ?>
-            <div class="error mb16"><?= e($msg); ?></div>
-        <?php endif; ?>
+        <?= Form::open(['action' => 'recipe/edit/' . $recipe['id'], 'enctype' => 'multipart/form-data']); ?>
+        <?= Form::csrf(); ?>
 
-        <?php echo Form::open(['action' => 'recipe/edit/' . $recipe['id'], 'enctype' => 'multipart/form-data']); ?>
-        <?php echo Form::csrf(); ?>
+        <div class="recipe-form__group flex items-start gap-12 mb-16">
+            <?= Form::label('レシピ名', 'title', ['class' => 'recipe-form__label font-semibold']); ?>
 
-        <div class="form-group mb16">
-            <?= Form::label('レシピ名', 'title', ['class' => 'font-semibold']); ?>
-
-            <div class="form-field">
-                <?= Form::input('title', Input::post('title', $recipe['title']), ['class' => 'form-control']); ?>
+            <div class="recipe-form__field">
+                <?= Form::input('title', Input::post('title', $recipe['title']), ['class' => 'recipe-form__control rounded-4 w-full border']); ?>
 
                 <?php if (!empty($errors['title'])): ?>
                     <p class="error"><?= e($errors['title']) ?></p>
@@ -26,11 +20,11 @@
             </div>
         </div>
 
-        <div class="form-group mb16">
-            <?php echo Form::label('カテゴリー', 'category', ['class' => 'font-semibold']); ?>
+        <div class="recipe-form__group flex items-start gap-12 mb-16">
+            <?= Form::label('カテゴリー', 'category', ['class' => 'recipe-form__label font-semibold']); ?>
 
-            <div class="form-field">
-                <?php echo Form::select('category', Input::post('category', $recipe['category_id']), $category_options, ['class' => 'form-control']); ?>
+            <div class="recipe-form__field">
+                <?= Form::select('category', Input::post('category', $recipe['category_id']), $category_options, ['class' => 'recipe-form__control rounded-4 w-full border']); ?>
 
                 <?php if (!empty($errors['category'])): ?>
                     <div class="error"><?= e($errors['category']) ?></div>
@@ -38,17 +32,17 @@
             </div>
         </div>
 
-        <div class="form-group mb16">
-            <?= Form::label('レシピ画像', 'image_path', ['class' => 'font-semibold']); ?>
-            <div class="form-field">
-                <?php echo Form::file('image_path', [
+        <div class="recipe-form__group flex items-start gap-12 mb-16">
+            <?= Form::label('レシピ画像', 'image_path', ['class' => 'recipe-form__label font-semibold']); ?>
+            <div class="recipe-form__field">
+                <?= Form::file('image_path', [
                     'id' => 'image_path',
                     'accept' => 'image/*',
                     'style' => 'display:none',
                     'data-bind' => 'event: { change: onImageChange }'
                 ]); ?>
 
-                <div class="image-uploader" data-bind="click: triggerFileInput">
+                <div class="image-uploader flex items-center justify-center rounded-8 overflow-hidden mb-16" data-bind="click: triggerFileInput">
 
                     <!-- アイコン表示 -->
                     <img
@@ -61,7 +55,7 @@
                     <img data-bind="
 						visible: imagePreview,
 						attr: { src: imagePreview }"
-                        alt="画像プレビュー" class="image-preview">
+                        alt="画像プレビュー" class="image-preview w-full h-full">
                 </div>
 
                 <?php if (!empty($errors['image_path'])): ?>
@@ -70,32 +64,32 @@
             </div>
         </div>
 
-        <h3 class="section-title mb16">材料</h3>
+        <h3 class="section-title mb-16">材料</h3>
 
-        <div class="ingredients-list" data-bind="foreach: ingredients">
+        <div class="ingredients" data-bind="foreach: ingredients">
 
-            <div class="ingredient-item mb16">
-                <div class="ingredient-fields">
-                    <div class="ingredient-field">
-                        <?= Form::label('材料名', null, ['class' => 'ingredient-field__label nowrap, font-semibold']); ?>
+            <div class="ingredients__item flex items-end gap-16 mb-16">
+                <div class="ingredients__fields flex gap-16">
+                    <div class="ingredients__field flex items-center gap-8">
+                        <?= Form::label('材料名', null, ['class' => 'ingredients__label nowrap font-semibold']); ?>
                         <?= Form::input(
                             'ingredients[name][]',
                             '',
-                            ['data-bind' => 'value: name', 'class' => 'form-control']
+                            ['data-bind' => 'value: name', 'class' => 'recipe-form__control rounded-4 w-full border']
                         ); ?>
                     </div>
 
-                    <div class="ingredient-field">
-                        <?= Form::label('分量', null, ['class' => 'ingredient-field__label nowrap, font-semibold']); ?>
+                    <div class="ingredients__field flex items-center gap-8">
+                        <?= Form::label('分量', null, ['class' => 'ingredients__label nowrap font-semibold']); ?>
                         <?= Form::input(
                             'ingredients[quantity][]',
                             '',
-                            ['data-bind' => 'value: quantity', 'class' => 'form-control']
+                            ['data-bind' => 'value: quantity', 'class' => 'recipe-form__control rounded-4 w-full border']
                         ); ?>
                     </div>
                 </div>
 
-                <div class="ingredient-actions">
+                <div class="ingredients__actions">
                     <button type="button" class="btn btn-remove" data-bind="click: $parent.removeIngredient">
                         削除
                     </button>
@@ -105,32 +99,32 @@
         </div>
 
         <?php if (!empty($errors['ingredients'])): ?>
-            <div class="error mb16"><?= e($errors['ingredients']) ?></div>
+            <div class="error mb-16"><?= e($errors['ingredients']) ?></div>
         <?php endif; ?>
 
         <button type="button" class="btn btn-add" data-bind="click: addIngredient">
             ＋ 材料を追加
         </button>
 
-        <h3 class="section-title mb16">作り方</h3>
+        <h3 class="section-title mb-16">作り方</h3>
 
-        <div class="steps-list" data-bind="foreach: steps">
+        <div class="steps" data-bind="foreach: steps">
 
-            <div class="step-item mb16">
-                <div class="step-field">
+            <div class="steps__item flex-col gap-12 mb-16">
+                <div class="steps__field flex items-start gap-16">
                     <?= Form::label(
                         '',
                         '',
-                        ['data-bind' => 'text: "手順 " + ($index() + 1)', 'class' => 'step-field__label font-semibold']
+                        ['data-bind' => 'text: "手順 " + ($index() + 1)', 'class' => 'steps__label font-semibold']
                     ); ?>
                     <?= Form::textarea(
                         'steps[]',
                         '',
-                        ['data-bind' => 'value: description', 'class' => 'step-field__textarea']
+                        ['data-bind' => 'value: description', 'class' => 'steps__textarea rounded-4 border']
                     ); ?>
                 </div>
 
-                <div class="step-actions">
+                <div class="steps__actions flex justify-end">
                     <button type="button" class="btn btn-remove" data-bind="click: $parent.removeStep">
                         削除
                     </button>
@@ -140,25 +134,34 @@
         </div>
 
         <?php if (!empty($errors['steps'])): ?>
-            <div class="error mb16"><?= e($errors['steps']) ?></div>
+            <div class="error mb-16"><?= e($errors['steps']) ?></div>
         <?php endif; ?>
 
         <button type="button" class="btn btn-add" data-bind="click: addStep">
             ＋ 手順を追加
         </button>
-        <div class="recipe-form__actions">
-            <button type="button" class="btn-lg btn-cancel" onclick="history.back();">
-                キャンセル
-            </button>
-            <?php echo Form::submit('submit', 'レシピ更新', ['class' => 'btn-lg btn-add']); ?>
+        <div class="recipe-form__actions flex justify-end gap-12 mt-24">
+            <a href="/recipe/index" class="btn-lg btn-cancel">キャンセル</a>
+            <?= Form::submit('submit', 'レシピ更新', ['class' => 'btn-lg btn-add']); ?>
         </div>
-        <?php echo Form::close(); ?>
+        <?= Form::close(); ?>
     </div>
 </div>
 
 <script>
-    window.initialIngredients = <?= json_encode($ingredients ?? []) ?>;
-    window.initialSteps = <?= json_encode($steps ?? []) ?>;
-    window.initialImagePath = <?= json_encode(!empty($recipe['image_path']) ? '/' . ltrim($recipe['image_path'], '/') : null); ?>;
+    window.initialIngredients = <?= json_encode(
+                                    $ingredients ?? [],
+                                    JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
+                                ) ?>;
+
+    window.initialSteps = <?= json_encode(
+                                $steps ?? [],
+                                JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
+                            ) ?>;
+
+    window.initialImagePath = <?= json_encode(
+                                    !empty($recipe['image_path']) ? '/' . ltrim($recipe['image_path'], '/') : null,
+                                    JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
+                                ) ?>;
 </script>
 <script src="/assets/js/recipe_form.js"></script>

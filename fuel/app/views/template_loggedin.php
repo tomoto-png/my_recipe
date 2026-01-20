@@ -18,11 +18,24 @@
     <?= $header ?>
 
     <main>
+        <?php if ($message = \Session::get_flash('message')): ?>
+            <div id="flash-message" class="flash-message">
+                <?= e($message) ?>
+            </div>
+        <?php endif; ?>
+
+        <?php if ($error = \Session::get_flash('error')): ?>
+            <div id="flash-message" class="flash-message error">
+                <?= e($error) ?>
+            </div>
+        <?php endif; ?>
+
         <div class="main-inner">
             <?= $content ?>
         </div>
     </main>
 
+    <script src="/assets/js/common.js"></script>
 </body>
 
 </html>

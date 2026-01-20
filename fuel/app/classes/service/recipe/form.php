@@ -2,7 +2,7 @@
 
 class Service_Recipe_Form
 {
-    public static function validate(bool $is_create)
+    public static function validate($is_create)
     {
         $errors = [];
         $val = Validation::forge();
@@ -17,7 +17,7 @@ class Service_Recipe_Form
 
         //メッセージ設定
         $val->set_message('required', ':label は必須です');
-        $val->set_message('numeric_min', ':labelを正しく選択してください');
+        $val->set_message('numeric_min', '正しい:labelを選択してください');
 
         //画像バリデーション
         if ($is_create || ($_FILES['image_path']['error'] !== UPLOAD_ERR_NO_FILE)) {
@@ -35,18 +35,18 @@ class Service_Recipe_Form
         }
 
         if (! $val->run()) {
-            foreach ($val->error() as $key => $error) {
-                $errors[$key] = $error->get_message();
+            foreach ($val->error() as $field => $error) {
+                $errors[$field] = $error->get_message();
             }
         }
 
         //材料
-        $clean_ingredients = self::clean_ingredients();
+        $clean_ingredients = self::extract_ingredients();
         if (empty($clean_ingredients)) {
             $errors['ingredients'] = '材料を1つ以上入力してください';
         }
         //手順
-        $clean_steps = self::clean_steps();
+        $clean_steps = self::extract_steps();
         if (empty($clean_steps)) {
             $errors['steps'] = '手順を1つ以上入力してください';
         }
@@ -54,10 +54,10 @@ class Service_Recipe_Form
         return [$errors, $clean_ingredients, $clean_steps];
     }
 
-    private static function clean_ingredients()
+    private static function extract_ingredients()
     {
         $ingredients = Input::post('ingredients');
-        $result = [];
+        $cleaned_ingredients = [];
 
         // 材料の空行を除去し、有効な材料のみを抽出
         if (is_array($ingredients) && isset($ingredients['name']) && is_array($ingredients['name'])) {
@@ -68,20 +68,20 @@ class Service_Recipe_Form
 
                 $quantity = trim($ingredients['quantity'][$i] ?? '');
 
-                $result[] = [
+                $cleaned_ingredients[] = [
                     'name' => $name,
                     'quantity' => $quantity
                 ];
             }
         }
 
-        return $result;
+        return $cleaned_ingredients;
     }
 
-    private static function clean_steps()
+    private static function extract_steps()
     {
         $steps = Input::post('steps');
-        $result = [];
+        $cleaned_steps = [];
 
         // 手順の空行を除去し、有効な手順のみを抽出
         if (is_array($steps)) {
@@ -90,12 +90,12 @@ class Service_Recipe_Form
                 // 前後の空白を除去してチェック
                 if ($step === '') continue;
 
-                $result[] = [
+                $cleaned_steps[] = [
                     'description' => $step,
                 ];
             }
         }
 
-        return $result;
+        return $cleaned_steps;
     }
 }
