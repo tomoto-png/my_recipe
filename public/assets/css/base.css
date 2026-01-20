@@ -1,0 +1,109 @@
+/* ボタン */
+.btn {
+    border-radius: 4px;
+    font-size: 13px;
+    padding: 4px 10px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.btn-lg {
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 15px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* 削除ボタン */
+.btn-remove {
+    color: #b71c1c;
+    border: 1px solid #ef9a9a;
+    background-color: #fdecea;
+}
+
+.btn-remove:hover {
+    background-color: #f9d6d5;
+    border-color: #c62828;
+}
+
+/* 追加ボタン */
+.btn-add {
+    color: #1b5e20;
+    border: 1px solid #81c784;
+    background-color: #e8f5e9;
+}
+
+.btn-add:hover {
+    background-color: #c8e6c9;
+    border-color: #2e7d32;
+}
+
+/* 編集ボタン */
+.btn-edit {
+    color: #1565c0;
+    border: 1px solid #90caf9;
+    background-color: #e3f2fd;
+}
+
+.btn-edit:hover {
+    background-color: #bbdefb;
+    border-color: #64b5f6;
+}
+
+/* キャンセルボタン */
+.btn-cancel {
+    color: #444;
+    border: 1px solid #ccc;
+    background-color: #f5f5f5;
+}
+
+.btn-cancel:hover {
+    background-color: #e0e0e0;
+    border-color: #999;
+}
+
+/* 検索ボタン */
+.btn-search {
+    height: 38px;
+    padding: 0 14px;
+    font-size: 14px;
+
+    color: #333;
+    background-color: #f5f5f5;
+    border: 1px solid #bbb;
+    border-radius: 4px;
+
+    cursor: pointer;
+}
+
+.btn-search:hover {
+    background-color: #e0e0e0;
+    border-color: #888;
+}
+
+/* エラー */
+.error {
+    color: #d32f2f;
+    font-size: 0.9em;
+}
+
+.flash-message {
+    position: fixed;
+    top: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 12px 20px;
+    border-radius: 6px;
+    border: 1px solid #eee;
+    background: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #81c784;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+}
+
+.flash-message.error {
+    background: #fdecea;
+    border: 1px solid #f5c6cb;
+}

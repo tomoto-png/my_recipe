@@ -1,0 +1,11 @@
+main {
+    padding-top: 92px;
+    padding-bottom: 32px;
+    font-family: "Arial", "Meiryo", sans-serif;
+}
+
+.main-inner {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
