@@ -1,83 +1,29 @@
 body {
     margin: 0;
     min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #fff;
 }
 
 /* フォーム全体 */
 .auth-form {
-    width: 100%;
     max-width: 360px;
-    padding: 32px;
-    background: #f7f7f7;
+    background-color: #f7f7f7;
     border: 1px solid #e0e0e0;
 }
 
-/* フォーム行 */
-.form-row {
-    display: flex;
-    align-items: center;
-    margin-bottom: 12px;
-}
-
-.form-row label {
+.auth-form__label {
     width: 140px;
 }
 
-.form-row input {
+.auth-form__input {
     flex: 1;
-    padding: 6px;
 }
 
-.form-row input:focus {
+.auth-form__error {
+    margin-left: 140px;
+}
+
+
+.auth-form__input:focus {
     outline: none;
     border: 1px solid #999;
-}
-
-/* ボタン */
-.btn {
-    padding: 8px 0;
-    border: none;
-    font-size: 16px;
-    cursor: pointer;
-}
-
-.btn-primary {
-    width: 100%;
-    background: #d7d7d7;
-    color: #000;
-}
-
-.btn-primary:hover {
-    background: #c0c0c0;
-}
-
-/* エラーメッセージ */
-.error {
-    font-size: 14px;
-    color: #e74c3c;
-}
-
-.mb24 {
-    margin-bottom: 24px;
-}
-
-.mb16 {
-    margin-bottom: 16px;
-}
-
-.mt16 {
-    margin-top: 16px;
-}
-
-
-.mt24 {
-    margin-top: 24px;
-}
-
-.text-center {
-    text-align: center;
 }
