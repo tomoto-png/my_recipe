@@ -73,7 +73,7 @@ class Model_Recipe_Ingredient
             ->where('recipe_id', '=', $recipe_id)
             ->execute();
 
-        static::create($recipe_id, $ingredients, $now);
+        static::createMany($recipe_id, $ingredients, $now);
     }
 
     public static function delete($ingredient_id)
