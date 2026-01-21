@@ -27,7 +27,7 @@ class Model_Recipe_Ingredient
     {
         $table = static::$_table_name;
 
-        return \DB::select('name', 'quantity')
+        return \DB::select('id', 'name', 'quantity')
             ->from($table)
             ->where('recipe_id', '=', $recipe_id)
             ->order_by('created_at', 'desc')
@@ -36,7 +36,7 @@ class Model_Recipe_Ingredient
     }
 
     //レシピの材料を一括登録
-    public static function create($recipe_id, $ingredients, $now)
+    public static function createMany($recipe_id, $ingredients, $now)
     {
         $table = static::$_table_name;
         $query = \DB::insert($table)
@@ -55,6 +55,15 @@ class Model_Recipe_Ingredient
         $query->execute();
     }
 
+    //レシピの材料を登録
+    public static function create($data)
+    {
+        $table = static::$_table_name;
+        $result = \DB::insert($table)->set($data)->execute();
+        return $result[0];
+    }
+
+
     //レシピの材料を一括入れ替え更新
     public static function update($recipe_id, $ingredients, $now)
     {
@@ -65,5 +74,14 @@ class Model_Recipe_Ingredient
             ->execute();
 
         static::create($recipe_id, $ingredients, $now);
+    }
+
+    public static function delete($ingredient_id)
+    {
+        $table = static::$_table_name;
+
+        return \DB::delete($table)
+            ->where('id', '=', $ingredient_id)
+            ->execute();
     }
 }

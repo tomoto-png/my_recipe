@@ -6,3 +6,9 @@ nbproject
 #intellij
 .idea
 /change.php
+
+# logs
+fuel/app/logs/
+
+# user uploads
+public/uploads/
