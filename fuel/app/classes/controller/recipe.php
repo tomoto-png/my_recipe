@@ -5,6 +5,7 @@ class Controller_Recipe extends Controller_Base
 	public function before()
 	{
 		parent::before();
+		\Config::load('recipe', true);
 
 		switch ($this->request->action) {
 			case 'index':
@@ -104,7 +105,7 @@ class Controller_Recipe extends Controller_Base
 			}
 
 			$file = $files[0];
-			$image_path = 'uploads/recipes/' . $file['saved_as'];
+			$image_path = \Config::get('recipe.image.dir') . $file['saved_as'];
 
 			// レシピ登録
 			$recipe_id = Model_Recipe::create([
@@ -204,7 +205,7 @@ class Controller_Recipe extends Controller_Base
 				}
 
 				$file = $files[0];
-				$image_path = 'uploads/recipes/' . $file['saved_as'];
+				$image_path = \Config::get('recipe.image.dir') . $file['saved_as'];
 			}
 
 			Model_Recipe::update(

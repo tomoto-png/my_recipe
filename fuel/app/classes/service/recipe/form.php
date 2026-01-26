@@ -22,7 +22,7 @@ class Service_Recipe_Form
         //画像バリデーション
         if ($is_create || ($_FILES['image_path']['error'] !== UPLOAD_ERR_NO_FILE)) {
             Upload::process([
-                'path' => DOCROOT . 'uploads/recipes',
+                'path' => DOCROOT . \Config::get('recipe.image.dir'),
                 'randomize' => true,
                 'ext_whitelist' => ['jpg', 'jpeg', 'png', 'gif'],
                 'max_size' => 2 * 1024 * 1024,
