@@ -1,24 +1,22 @@
 <?php
 
-use Fuel\Core\Validation;
-
 class Controller_Auth extends Controller
 {
 	//ログインフォームの表示
 	public function action_login()
 	{
-		return View::forge('auth/login');
+		return \View::forge('auth/login');
 	}
 	//ログイン処理
 	public function post_login()
 	{
 		// CSRFチェック
-		if (! Security::check_token()) {
-			return Response::forge('不正なリクエストです');
+		if (! \Security::check_token()) {
+			return \Response::forge('不正なリクエストです');
 		}
 
 		//バリデーション
-		$val = Validation::forge();
+		$val = \Validation::forge();
 		$val->add('email', 'メールアドレス')
 			->add_rule('required')
 			->add_rule('valid_email');
@@ -37,39 +35,39 @@ class Controller_Auth extends Controller
 				$errors[$field] = $error->get_message();
 			}
 
-			return View::forge('auth/login', [
+			return \View::forge('auth/login', [
 				'errors' => $errors,
 			]);
 		}
 
 		// フォームの入力値を取得
-		$email = Input::post('email');
-		$password = Input::post('password');
+		$email = \Input::post('email');
+		$password = \Input::post('password');
 
 		//ログイン処理
 		if (\Auth::login($email, $password)) {
-			return Response::redirect('/');
+			return \Response::redirect('/');
 		}
 
 		//ログイン失敗の処理
-		Session::set_flash('error', 'メールアドレスまたはパスワードが違います');
-		return Response::redirect('auth/login');
+		\Session::set_flash('error', 'メールアドレスまたはパスワードが違います');
+		return \Response::redirect('auth/login');
 	}
 	//新規登録フォームの表示
 	public function action_register()
 	{
-		return View::forge('auth/register');
+		return \View::forge('auth/register');
 	}
 	//新規登録処理
 	public function post_register()
 	{
 		// CSRFチェック
-		if (! Security::check_token()) {
-			return Response::forge('不正なリクエストです');
+		if (! \Security::check_token()) {
+			return \Response::forge('不正なリクエストです');
 		}
 
 		//バリデーション
-		$val = Validation::forge();
+		$val = \Validation::forge();
 		$val->add_callable('Validation_User');
 
 		$val->add('email', 'メールアドレス')
@@ -97,29 +95,29 @@ class Controller_Auth extends Controller
 			foreach ($val->error() as $field => $error) {
 				$errors[$field] = $error->get_message();
 			}
-			return View::forge('auth/register', [
+			return \View::forge('auth/register', [
 				'errors' => $errors,
 			]);
 		}
 
 		//フォームの入力値を取得
-		$email = Input::post('email');
-		$password = Input::post('password');
+		$email = \Input::post('email');
+		$password = \Input::post('password');
 
 		//ユーザー登録処理
 		try {
-			Auth::create_user(
+			\Auth::create_user(
 				$email,
 				$password,
 				$email
 			);
-		} catch (Exception $e) {
-			Session::set_flash('error', '登録に失敗しました');
-			return Response::redirect('auth/register');
+		} catch (\Exception $e) {
+			\Session::set_flash('error', '登録に失敗しました');
+			return \Response::redirect('auth/register');
 		}
 
 		//登録後のログイン
-		Auth::login($email, $password);
-		return Response::redirect('/');
+		\Auth::login($email, $password);
+		return \Response::redirect('/');
 	}
 }
