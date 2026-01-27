@@ -34,7 +34,7 @@ class Controller_Shopping extends Controller_Base
 		$val->set_message('required', ':label は必須です');
 		$val->set_message('max_length', ':label は :param:1 文字以内で入力してください');
 
-		$data = json_decode(file_get_contents('php://input'), true);
+		$data = \Input::json();
 
 		if (! is_array($data)) {
 			return \Response::forge(
@@ -48,6 +48,7 @@ class Controller_Shopping extends Controller_Base
 		}
 
 		if (! $val->run($data)) {
+			$errors = [];
 			foreach ($val->error() as $field => $error) {
 				$errors[$field] = [$error->get_message()];
 			}
