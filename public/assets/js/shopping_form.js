@@ -35,6 +35,7 @@ function ShoppingViewModel() {
 
         fetch('/shopping/create', {
             method: 'POST',
+            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRF-Token': token
