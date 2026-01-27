@@ -49,7 +49,11 @@ class Controller_Recipe extends Controller_Base
 	public function action_view($id)
 	{
 		$user_id = $this->user_id;
-		$recipe = Model_Recipe::find_by_id_and_user_or_404($id, $user_id);
+		$recipe = Model_Recipe::find_by_id_and_user($id, $user_id);
+
+		if (! $recipe) {
+			throw new \HttpNotFoundException();
+		}
 
 		//レシピの材料と手順取得
 		$ingredients = Model_Recipe_Ingredient::find_by_recipe_id($id);
@@ -154,7 +158,10 @@ class Controller_Recipe extends Controller_Base
 		$user_id = $this->user_id;
 
 		// レシピ取得
-		$recipe = Model_Recipe::find_by_id_and_user_or_404($id, $user_id);
+		$recipe = Model_Recipe::find_by_id_and_user($id, $user_id);
+		if (! $recipe) {
+			throw new \HttpNotFoundException();
+		}
 		$ingredients = Model_Recipe_Ingredient::find_by_recipe_id($id);
 		$steps = Model_Recipe_Step::find_by_recipe_id($id);
 		$category_options = Model_Category::find_all();
@@ -174,7 +181,10 @@ class Controller_Recipe extends Controller_Base
 		}
 
 		$user_id = $this->user_id;
-		$recipe = Model_Recipe::find_by_id_and_user_or_404($id, $user_id);
+		$recipe = Model_Recipe::find_by_id_and_user($id, $user_id);
+		if (! $recipe) {
+			throw new \HttpNotFoundException();
+		}
 
 		//recipe_formバリデーション
 		[$errors, $ingredients, $steps]

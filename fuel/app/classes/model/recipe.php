@@ -41,10 +41,11 @@ class Model_Recipe
         return $query->execute()->as_array();
     }
 
-    //ユーザーレシピ詳細取得
+    //ユーザーレシピ情報取得
     public static function find_by_id_and_user($id, $user_id)
     {
         $table = static::$_table_name;
+
         return \DB::select(
             "{$table}.id",
             "{$table}.title",
@@ -60,18 +61,6 @@ class Model_Recipe
             ->where("{$table}.user_id", '=', $user_id)
             ->execute()
             ->current();
-    }
-
-    // 指定IDのレシピを取得し、存在しなければ 404 を返す
-    public static function find_by_id_and_user_or_404($id, $user_id)
-    {
-        $recipe = self::find_by_id_and_user($id, $user_id);
-
-        if (! $recipe) {
-            throw new \HttpNotFoundException();
-        }
-
-        return $recipe;
     }
 
     //レシピ登録
@@ -97,7 +86,10 @@ class Model_Recipe
     //レシピ削除
     public static function delete_by_id_and_user($id, $user_id)
     {
-        $recipe = self::find_by_id_and_user_or_404($id, $user_id);
+        $recipe = self::find_by_id_and_user($id, $user_id);
+        if (! $recipe) {
+            throw new \HttpNotFoundException();
+        }
         $table = static::$_table_name;
 
         \DB::delete($table)
