@@ -129,7 +129,7 @@ class Controller_Shopping extends Controller_Base
 		$user_id = $this->user_id;
 		$now = date('Y-m-d H:i:s');
 
-		Model_Shopping_List_Item::createMany($ingredient_ids, $user_id, $now);
+		Model_Shopping_List_Item::create_all_by_ingredients($ingredient_ids, $user_id, $now);
 
 		\Session::set_flash('message', '買い物リストに追加しました');
 		return \Response::redirect('recipe/view/' . $recipe_id);
@@ -143,9 +143,9 @@ class Controller_Shopping extends Controller_Base
 
 		$user_id = $this->user_id;
 
-		$checked = \Input::post('checked') ? 1 : 0;
+		$is_checked = \Input::post('checked') ? 1 : 0;
 
-		Model_Shopping_List_Item::update_checked_status($id, $user_id, $checked);
+		Model_Shopping_List_Item::update_checked_status($id, $user_id, $is_checked);
 
 		return \Response::redirect('shopping/index');
 	}
@@ -160,7 +160,7 @@ class Controller_Shopping extends Controller_Base
 		try {
 			$user_id = $this->user_id;
 
-			$item = Model_Shopping_List_Item::find_with_ingredient($id, $user_id);
+			$item = Model_Shopping_List_Item::find_detail_by_id_and_user($id, $user_id);
 
 			if (! $item) {
 				throw new \HttpNotFoundException();
@@ -171,7 +171,7 @@ class Controller_Shopping extends Controller_Base
 			Model_Shopping_List_Item::delete_by_id_and_user($id, $user_id);
 
 			if ($item['recipe_id'] === null) {
-				Model_Recipe_Ingredient::delete(
+				Model_Recipe_Ingredient::delete_by_id(
 					$item['recipe_ingredient_id']
 				);
 			}

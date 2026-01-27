@@ -147,12 +147,12 @@
 
 <script>
 	window.initialIngredients = <?= json_encode(
-									$clean_ingredients ?? [],
+									$ingredients ?? [],
 									JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
 								) ?>;
 
 	window.initialSteps = <?= json_encode(
-								$clean_steps ?? [],
+								$steps ?? [],
 								JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
 							) ?>;
 </script>

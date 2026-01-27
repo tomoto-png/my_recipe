@@ -42,14 +42,14 @@ class Controller_Recipe extends Controller_Base
 		$this->template->content = \View::forge('recipe/index', [
 			'recipes' => $recipes,
 			'ingredients' => $ingredients_by_recipe,
-			'categories' => $category_options,
+			'category_options' => $category_options,
 		]);
 	}
 
 	public function action_view($id)
 	{
 		$user_id = $this->user_id;
-		$recipe = Model_Recipe::find_or_fail($id, $user_id);
+		$recipe = Model_Recipe::find_by_id_and_user_or_404($id, $user_id);
 
 		//レシピの材料と手順取得
 		$ingredients = Model_Recipe_Ingredient::find_by_recipe_id($id);
@@ -64,8 +64,9 @@ class Controller_Recipe extends Controller_Base
 
 	public function action_create()
 	{
+		$category_options = Model_Category::find_all();
 		$this->template->content = \View::forge('recipe/create', [
-			'category_options' => Model_Category::find_all(),
+			'category_options' => $category_options,
 		]);
 	}
 
@@ -76,15 +77,16 @@ class Controller_Recipe extends Controller_Base
 		}
 
 		//recipe_formバリデーション
-		[$errors, $clean_ingredients, $clean_steps]
+		[$errors, $ingredients, $steps]
 			= Service_Recipe_Form::validate(true);
 
 		if (! empty($errors)) {
+			$category_options = Model_Category::find_all();
 			$this->template->content = \View::forge('recipe/create', [
 				'errors' => $errors,
-				'category_options' => Model_Category::find_all(),
-				'clean_ingredients' => $clean_ingredients,
-				'clean_steps' => $clean_steps,
+				'category_options' => $category_options,
+				'ingredients' => $ingredients,
+				'steps' => $steps,
 			]);
 			return;
 		}
@@ -118,16 +120,16 @@ class Controller_Recipe extends Controller_Base
 			]);
 
 			// 材料登録
-			Model_Recipe_Ingredient::createMany(
+			Model_Recipe_Ingredient::create_all_by_recipe(
 				$recipe_id,
-				$clean_ingredients,
+				$ingredients,
 				$now
 			);
 
 			// 手順登録
-			Model_Recipe_Step::create(
+			Model_Recipe_Step::create_all_by_recipe(
 				$recipe_id,
-				$clean_steps,
+				$steps,
 				$now
 			);
 
@@ -152,15 +154,16 @@ class Controller_Recipe extends Controller_Base
 		$user_id = $this->user_id;
 
 		// レシピ取得
-		$recipe = Model_Recipe::find_or_fail($id, $user_id);
+		$recipe = Model_Recipe::find_by_id_and_user_or_404($id, $user_id);
 		$ingredients = Model_Recipe_Ingredient::find_by_recipe_id($id);
 		$steps = Model_Recipe_Step::find_by_recipe_id($id);
+		$category_options = Model_Category::find_all();
 
 		$this->template->content = \View::forge('recipe/edit', [
 			'recipe' => $recipe,
 			'ingredients' => $ingredients,
 			'steps' => $steps,
-			'category_options' => Model_Category::find_all(),
+			'category_options' => $category_options,
 		]);
 	}
 
@@ -171,20 +174,21 @@ class Controller_Recipe extends Controller_Base
 		}
 
 		$user_id = $this->user_id;
-		$recipe = Model_Recipe::find_or_fail($id, $user_id);
+		$recipe = Model_Recipe::find_by_id_and_user_or_404($id, $user_id);
 
 		//recipe_formバリデーション
-		[$errors, $clean_ingredients, $clean_steps]
+		[$errors, $ingredients, $steps]
 			= Service_Recipe_Form::validate(false);
 
 		//エラーがあればフォームに戻す
 		if (! empty($errors)) {
+			$category_options = Model_Category::find_all();
 			$this->template->content = \View::forge('recipe/edit', [
 				'errors' => $errors,
 				'recipe' => $recipe,
-				'category_options' => Model_Category::find_all(),
-				'ingredients' => $clean_ingredients,
-				'steps' => $clean_steps,
+				'category_options' => $category_options,
+				'ingredients' => $ingredients,
+				'steps' => $steps,
 			]);
 			return;
 		}
@@ -208,7 +212,7 @@ class Controller_Recipe extends Controller_Base
 				$image_path = \Config::get('recipe.image.dir') . $file['saved_as'];
 			}
 
-			Model_Recipe::update(
+			Model_Recipe::update_by_id_and_user(
 				$id,
 				$user_id,
 				[
@@ -219,8 +223,16 @@ class Controller_Recipe extends Controller_Base
 				]
 			);
 
-			Model_Recipe_Ingredient::update($id, $clean_ingredients, $now);
-			Model_Recipe_Step::update($id, $clean_steps, $now);
+			Model_Recipe_Ingredient::replace_all_by_recipe(
+				$id,
+				$ingredients,
+				$now
+			);
+			Model_Recipe_Step::replace_all_by_recipe(
+				$id,
+				$steps,
+				$now
+			);
 
 			\DB::commit_transaction();
 
@@ -253,7 +265,7 @@ class Controller_Recipe extends Controller_Base
 			$user_id = $this->user_id;
 
 			\DB::start_transaction();
-			$image_path = Model_Recipe::delete($id, $user_id);
+			$image_path = Model_Recipe::delete_by_id_and_user($id, $user_id);
 			\DB::commit_transaction();
 
 			// 画像削除

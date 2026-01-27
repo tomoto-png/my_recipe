@@ -41,17 +41,17 @@ class Service_Recipe_Form
         }
 
         //材料
-        $clean_ingredients = self::extract_ingredients();
-        if (empty($clean_ingredients)) {
+        $ingredients = self::extract_ingredients();
+        if (empty($ingredients)) {
             $errors['ingredients'] = '材料を1つ以上入力してください';
         }
         //手順
-        $clean_steps = self::extract_steps();
-        if (empty($clean_steps)) {
+        $steps = self::extract_steps();
+        if (empty($steps)) {
             $errors['steps'] = '手順を1つ以上入力してください';
         }
 
-        return [$errors, $clean_ingredients, $clean_steps];
+        return [$errors, $ingredients, $steps];
     }
 
     private static function extract_ingredients()

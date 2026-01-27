@@ -33,8 +33,8 @@ class Controller_Auth extends Controller
 
 			$errors = [];
 
-			foreach ($val->error() as $key => $error) {
-				$errors[$key] = $error->get_message();
+			foreach ($val->error() as $field => $error) {
+				$errors[$field] = $error->get_message();
 			}
 
 			return View::forge('auth/login', [
@@ -70,7 +70,7 @@ class Controller_Auth extends Controller
 
 		//バリデーション
 		$val = Validation::forge();
-		$val->add_callable('MyValidation');
+		$val->add_callable('Validation_User');
 
 		$val->add('email', 'メールアドレス')
 			->add_rule('required')
@@ -94,8 +94,8 @@ class Controller_Auth extends Controller
 
 		if (! $val->run()) {
 			$errors = [];
-			foreach ($val->error() as $key => $error) {
-				$errors[$key] = $error->get_message();
+			foreach ($val->error() as $field => $error) {
+				$errors[$field] = $error->get_message();
 			}
 			return View::forge('auth/register', [
 				'errors' => $errors,

@@ -18,7 +18,7 @@ class Model_Recipe_Step
     }
 
     //レシピの手順を一括登録
-    public static function create($recipe_id, $steps, $now)
+    public static function create_all_by_recipe($recipe_id, $steps, $now)
     {
         $table = static::$_table_name;
 
@@ -39,7 +39,7 @@ class Model_Recipe_Step
     }
 
     //レシピの手順を一括入れ替え更新
-    public static function update($recipe_id, $steps, $now)
+    public static function replace_all_by_recipe($recipe_id, $steps, $now)
     {
         $table = static::$_table_name;
 
@@ -47,6 +47,6 @@ class Model_Recipe_Step
             ->where('recipe_id', '=', $recipe_id)
             ->execute();
 
-        static::create($recipe_id, $steps, $now);
+        static::create_all_by_recipe($recipe_id, $steps, $now);
     }
 }
