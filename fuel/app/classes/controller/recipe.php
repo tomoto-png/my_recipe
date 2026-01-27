@@ -11,8 +11,11 @@ class Controller_Recipe extends Controller_Base
 			case 'index':
 				$this->template->title = 'レシピ一覧';
 				break;
+			case 'view':
+				$this->template->title = 'レシピ詳細';
+				break;
 			case 'create':
-				$this->template->title = 'レシピ作成';
+				$this->template->title = 'レシピ登録';
 				break;
 			case 'edit':
 				$this->template->title = 'レシピ編集';
