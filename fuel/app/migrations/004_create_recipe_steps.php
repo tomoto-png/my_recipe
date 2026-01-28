@@ -13,25 +13,25 @@ class Create_Recipe_Steps
             'description' => array('type' => 'text'),
             'created_at' => array('type' => 'datetime'),
             'updated_at' => array('type' => 'datetime'),
-        ), array('id'));
+        ), array('id'), false, 'InnoDB');
 
-        \DB::query("
-            ALTER TABLE recipe_steps
-            ADD CONSTRAINT fk_recipe_steps_recipe
-            FOREIGN KEY (recipe_id)
-            REFERENCES recipes(id)
-            ON DELETE CASCADE
-            ON UPDATE CASCADE
-        ")->execute();
+        \DBUtil::add_foreign_key(
+            'recipe_steps',
+            [
+                'constraint' => 'fk_recipe_steps_recipe',
+                'key'        => 'recipe_id',
+                'reference'  => [
+                    'table'  => 'recipes',
+                    'column' => 'id',
+                ],
+                'on_delete'  => 'CASCADE',
+                'on_update'  => 'CASCADE',
+            ]
+        );
     }
 
     public function down()
     {
-        \DB::query("
-            ALTER TABLE recipe_steps
-            DROP FOREIGN KEY fk_recipe_steps_recipe
-        ")->execute();
-
         \DBUtil::drop_table('recipe_steps');
     }
 }

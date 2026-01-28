@@ -169,12 +169,10 @@ class Controller_Shopping extends Controller_Base
 
 			\DB::start_transaction();
 
-			Model_Shopping_List_Item::delete_by_id_and_user($id, $user_id);
-
 			if ($item['recipe_id'] === null) {
-				Model_Recipe_Ingredient::delete_by_id(
-					$item['recipe_ingredient_id']
-				);
+				Model_Recipe_Ingredient::delete_by_id($item['recipe_ingredient_id']);
+			} else {
+				Model_Shopping_List_Item::delete_by_id_and_user($id, $user_id);
 			}
 
 			\DB::commit_transaction();
