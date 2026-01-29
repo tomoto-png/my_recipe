@@ -10,9 +10,8 @@ class Controller_Auth extends Controller
 	//ログイン処理
 	public function post_login()
 	{
-		// CSRFチェック
 		if (! \Security::check_token()) {
-			return \Response::forge('不正なリクエストです');
+			throw new \HttpBadRequestException();
 		}
 
 		//バリデーション
@@ -61,9 +60,8 @@ class Controller_Auth extends Controller
 	//新規登録処理
 	public function post_register()
 	{
-		// CSRFチェック
 		if (! \Security::check_token()) {
-			return \Response::forge('不正なリクエストです');
+			throw new \HttpBadRequestException();
 		}
 
 		//バリデーション
