@@ -11,6 +11,11 @@
 </head>
 
 <body class="flex items-center justify-center">
+    <?php if ($error = \Session::get_flash('error')): ?>
+        <div id="flash-message" class="flash-message error">
+            <?= e($error) ?>
+        </div>
+    <?php endif; ?>
     <div class="auth-form w-full p-32">
         <h1 class="mb-24 text-center">新規登録</h1>
 
@@ -68,6 +73,7 @@
             <a href="<?= Uri::create('auth/login'); ?>">すでにアカウントをお持ちの方はこちら</a>
         </p>
     </div>
+    <script src="/assets/js/common.js"></script>
 </body>
 
 </html>
