@@ -318,6 +318,9 @@ return array(
 		'packages' => [
 			'auth',
 		],
+		'config' => [
+			'recipe'
+		],
 	],
 
 );

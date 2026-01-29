@@ -5,7 +5,6 @@ class Controller_Recipe extends Controller_Base
 	public function before()
 	{
 		parent::before();
-		\Config::load('recipe', true);
 
 		switch ($this->request->action) {
 			case 'index':
