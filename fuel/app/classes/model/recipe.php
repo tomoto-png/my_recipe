@@ -17,7 +17,7 @@ class Model_Recipe
             "categories.name"
         )
             ->from($table)
-            ->join('categories', 'LEFT')
+            ->join('categories', 'INNER')
             ->on("{$table}.category_id", '=', 'categories.id')
             ->where("{$table}.user_id", '=', $user_id);
 
