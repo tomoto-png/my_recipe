@@ -154,7 +154,7 @@ class Controller_Shopping extends Controller_Base
 	public function post_delete($id)
 	{
 		// CSRFチェック
-		if (! Security::check_token()) {
+		if (! \Security::check_token()) {
 			throw new \HttpBadRequestException();
 		}
 
