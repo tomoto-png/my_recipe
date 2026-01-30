@@ -1,6 +1,6 @@
 <?php
 
-class MyValidation
+class Validation_User
 {
     //ユニークバリデーションの作成
     public static function _validation_unique_email($value)

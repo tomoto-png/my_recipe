@@ -11,14 +11,14 @@
 </head>
 
 <body class="flex items-center justify-center bg-white">
+
+	<?php if ($error = \Session::get_flash('error')): ?>
+		<div id="flash-message" class="flash-message error">
+			<?= e($error) ?>
+		</div>
+	<?php endif; ?>
 	<div class="auth-form w-full p-32">
 		<h1 class="mb-24 text-center">ログイン</h1>
-
-		<?php if ($msg = Session::get_flash('error')): ?>
-			<p class="error">
-				<?= e($msg); ?>
-			</p>
-		<?php endif; ?>
 
 		<?= Form::open(['action' => 'auth/login']); ?>
 		<?= Form::csrf(); ?>
@@ -56,6 +56,7 @@
 			<a href="<?= Uri::create('auth/register'); ?>">アカウントをお持ちでない方はこちら</a>
 		</p>
 	</div>
+	<script src="/assets/js/common.js"></script>
 </body>
 
 </html>

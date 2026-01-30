@@ -36,7 +36,7 @@ class Model_Shopping_List_Item
     }
 
     //ユーザーに紐づく買い物リスト1件を取得
-    public static function find_with_ingredient($id, $user_id)
+    public static function find_detail_by_id_and_user($id, $user_id)
     {
         $table = static::$_table_name;
 
@@ -55,7 +55,7 @@ class Model_Shopping_List_Item
     }
 
     //レシピ材料を買い物リストに一括追加する
-    public static function createMany($ingredient_ids, $user_id, $now)
+    public static function create_all_by_ingredients($ingredient_ids, $user_id, $now)
     {
         $table = static::$_table_name;
 

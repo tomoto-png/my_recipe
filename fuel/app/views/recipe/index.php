@@ -29,7 +29,7 @@
         <?= Form::select(
             'category_id',
             Input::get('category_id', ''),
-            $categories,
+            $category_options,
             [
                 'class'    => 'recipe-search__select bg-white rounded-4 border',
                 'onchange' => 'this.form.submit()',

@@ -2,7 +2,7 @@
 
 class Controller_Base extends Controller_Template
 {
-    public $template = 'template_loggedin';
+    public $template = 'layout_auth';
     protected $user_id;
 
     public function before()

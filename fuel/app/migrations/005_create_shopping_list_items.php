@@ -13,7 +13,20 @@ class Create_shopping_list_items
 			'is_checked' => array('type' => 'tinyint', 'constraint' => 1, 'default' => 0,),
 			'created_at' => array('type' => 'datetime'),
 			'updated_at' => array('type' => 'datetime'),
-		), array('id'));
+		), array('id'), false, 'InnoDB');
+
+		\DBUtil::add_foreign_key(
+			'shopping_list_items',
+			[
+				'constraint' => 'fk_shopping_list_items_recipe_ingredient',
+				'key'        => 'recipe_ingredient_id',
+				'reference'  => [
+					'table'  => 'recipe_ingredients',
+					'column' => 'id',
+				],
+				'on_delete'  => 'CASCADE',
+			]
+		);
 	}
 
 	public function down()
